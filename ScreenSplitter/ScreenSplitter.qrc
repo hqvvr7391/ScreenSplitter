@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="ScreenSplitter">
+    <qresource prefix="/ScreenSplitter">
+        <file>UI/Src/smart-tv.png</file>
     </qresource>
 </RCC>
