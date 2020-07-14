@@ -17,5 +17,5 @@ private:
 	QMenu* TrayMenu;
 
 private slots:
-	void IconActivated(QSystemTrayIcon::ActivationReason reason);
+	
 };

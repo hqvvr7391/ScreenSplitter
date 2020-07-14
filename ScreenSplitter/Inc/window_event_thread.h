@@ -8,6 +8,7 @@
 
 
 #include <QThread>
+#include <QDebug>
 
 
 class WindowEventThread : public QThread
@@ -18,22 +19,23 @@ public:
     explicit WindowEventThread(QWidget* parent = Q_NULLPTR);
     ~WindowEventThread();
 
+    static void CALLBACK WindowEventCallback(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
+        LONG idObject, LONG idChild,
+        DWORD dwEventThread, DWORD dwmsEventTime);
 
+    
 protected:
     void run() override;
     void stop();
 
 private:
-    std::vector<SplitWindow*> p_splitwindow;
-
-    bool is_active = FALSE;
-
+    QList<QScreen*> plist_monitor;
 
     MSG msg;
     HWINEVENTHOOK winmovehook;
+
+private slots:
+    void setWinEventHook();
     
 };
 
-void CALLBACK WindowEventCallback(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
-    LONG idObject, LONG idChild,
-    DWORD dwEventThread, DWORD dwmsEventTime);

@@ -5,7 +5,9 @@
 
 
 #include <QtWidgets/QMainWindow>
+#include <QDebug>
 #include <qt_windows.h>
+#include <QCloseEvent>
 
 #include "splitwindow.h"
 #include "window_event_thread.h"
@@ -23,9 +25,13 @@ public:
     bool nativeEvent(const QByteArray& eventType, void *msg, long *result);
 private:
     Ui::ScreenSplitterClass ui;
-    WindowEventThread windoweventthread;
+    WindowEventThread* windoweventthread;
 
     void hideEvent(QHideEvent* event);
+    void closeEvent(QCloseEvent* event);
 
-    SystemTray* TrayIcon;
+    SystemTray* TrayIcon;   
+
+private slots:
+    void IconActivated(QSystemTrayIcon::ActivationReason reason);
 };
