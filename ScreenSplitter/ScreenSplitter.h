@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef _SCREEN_SPLITTER_H_
+#define _SCREEN_SPLITTER_H_
 
 #include "ui_ScreenSplitter.h"
 
@@ -35,3 +37,6 @@ private:
 private slots:
     void IconActivated(QSystemTrayIcon::ActivationReason reason);
 };
+
+
+#endif

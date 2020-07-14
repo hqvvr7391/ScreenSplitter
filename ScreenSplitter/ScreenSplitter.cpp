@@ -10,19 +10,13 @@ ScreenSplitter::ScreenSplitter(QWidget* parent)
 
 	connect(TrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(IconActivated(QSystemTrayIcon::ActivationReason)));
 
-
-	SplitWindow* a = new SplitWindow();
-	a->show();
-
-	windoweventthread = new WindowEventThread(parent);
+	windoweventthread = WindowEventThread::getInstance();
 	//connect(windoweventthread, SIGNAL(started()), windoweventthread, SLOT(setWinEventHook()));
 
-	windoweventthread->start();
 
-	qDebug() << "\nmain thread " << QThread::currentThreadId();
+	//windoweventthread->start();
 
-	
-
+	qDebug() << "Main thread : " << QThread::currentThread();
 }
 
 ScreenSplitter::~ScreenSplitter()
