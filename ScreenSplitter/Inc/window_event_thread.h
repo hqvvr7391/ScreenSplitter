@@ -11,9 +11,13 @@
 
 #include "splitwindow.h"
 
-
-#include <QThread>
 #include <QDebug>
+
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QThread>
+#include <QTimer>
+
 
 
 
@@ -26,38 +30,46 @@ public:
     explicit WindowEventThread(QWidget* parent = Q_NULLPTR);
     ~WindowEventThread();
 
+    QList<QScreen*> plist_monitor;
+
     static WindowEventThread* getInstance();
 
     static void CALLBACK WindowEventCallback(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
         LONG idObject, LONG idChild,
         DWORD dwEventThread, DWORD dwmsEventTime);
 
-    void showSplitWindow();
-    void hideSplitWindow();
+    QPoint getMousePoint();
+    int getMouseScreen();
 /*
 
 protected:
     void run() override;
     void stop();
 */
-
-
 signals:
-    void windowIsMoving();
-    void windowIsMoved();
+    void event_WindowMoveStart();
+    void event_WindowMoveChanging();
+    void event_WindowMoveEnd();
 
 private:
     static WindowEventThread* instance;
+    QTimer* timer;
 
-    QList<QScreen*> plist_monitor;
-    QList<SplitWindow*> plist_splitWindow;
+    QDesktopWidget* desktop;
+    QPoint mouse_position;
 
     MSG msg;
     HWINEVENTHOOK* winmovehook = nullptr;
 
 private slots:
     void setWinEventHook();
-    
+
+    void process();
+
+    void update();
+
+    void windowIsMoving();
+    void windowIsMoved();
    
 };
 

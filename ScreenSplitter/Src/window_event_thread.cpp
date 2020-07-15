@@ -5,28 +5,19 @@ WindowEventThread* WindowEventThread::instance = nullptr;
 WindowEventThread::WindowEventThread(QWidget* parent)
 {
 	
-	setWinEventHook();
-
 	plist_monitor = QGuiApplication::screens();
-	for (int i = 0; i < plist_monitor.size(); i++) {
-		plist_splitWindow.push_back(new SplitWindow(Q_NULLPTR, plist_monitor[i]));
-		qDebug() << plist_splitWindow[i] << " Rect : " << plist_splitWindow[i]->geometry();
 
-		//plist_splitWindow[i]->show();
-	}
-	
-	//connect(this, &WindowEventThread::windowIsMoving, this, &WindowEventThread::showSplitWindow);
-	//connect(this, &WindowEventThread::windowIsMoved, this, &WindowEventThread::hideSplitWindow);
+	desktop = QApplication::desktop();
+	timer = new QTimer(this);
+	connect(timer, &QTimer::timeout, this, &WindowEventThread::update);
+	timer->setInterval(30);
 }
+
 
 WindowEventThread::~WindowEventThread()
 {
 	if (winmovehook != nullptr) {
-		UnhookWinEvent(*winmovehook);
-	}
-
-	for (int i = 0; i < plist_monitor.size(); i++) {
-		plist_splitWindow[i]->hide();
+		UnhookWinEvent((HWINEVENTHOOK) winmovehook);
 	}
 }
 
@@ -36,34 +27,43 @@ WindowEventThread* WindowEventThread::getInstance()
 	return instance;
 }
 
-/*
-void WindowEventThread::run()
+void WindowEventThread::process()
 {
-	qDebug() << "WindowEventThread : " << QThread::currentThread();
-	if (winmovehook == nullptr) {  }
-	
-	while (GetMessage(&msg, NULL, 0, 0) > 0) {
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-
-		sleep(10);
-	}
-}*/
-
-void WindowEventThread::showSplitWindow()
-{
-	qDebug() << "\nshow Thread : " << QThread::currentThread();
-	for (int i = 0; i < plist_monitor.size(); i++) {
-		plist_splitWindow[i]->show();
-	}
+	qDebug() << "registerd windowHook";
+	setWinEventHook();
 }
 
-void WindowEventThread::hideSplitWindow()
+void WindowEventThread::update()
 {
-	for (int i = 0; i < plist_monitor.size(); i++) {
-		plist_splitWindow[i]->hide();
-	}
+	emit event_WindowMoveChanging();
 }
+
+QPoint WindowEventThread::getMousePoint() 
+{
+	QPoint globalCursorPos = QCursor::pos();
+	int mousePos = desktop->screenNumber(globalCursorPos);
+	return globalCursorPos;
+}
+
+int WindowEventThread::getMouseScreen()
+{
+	int mousePos = desktop->screenNumber(getMousePoint());
+	return mousePos;
+}
+
+
+void WindowEventThread::windowIsMoving()
+{
+	timer->start();
+	emit event_WindowMoveStart();
+}
+
+void WindowEventThread::windowIsMoved()
+{
+	timer->stop();
+	emit event_WindowMoveEnd();
+}
+
 
 void CALLBACK WindowEventThread::WindowEventCallback(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
 	LONG idObject, LONG idChild,
@@ -74,11 +74,10 @@ void CALLBACK WindowEventThread::WindowEventCallback(HWINEVENTHOOK hook, DWORD e
 	WindowEventThread* instance = WindowEventThread::getInstance();
 
 	if (event == EVENT_SYSTEM_MOVESIZESTART) {
-		instance->showSplitWindow();
+		instance->windowIsMoving();
 	}
 	else if (event == EVENT_SYSTEM_MOVESIZEEND) {
-		instance->hideSplitWindow();
-
+		instance->windowIsMoved();
 	}
 }
 

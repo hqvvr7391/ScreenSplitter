@@ -24,18 +24,33 @@ public:
     ScreenSplitter(QWidget *parent = Q_NULLPTR);
     ~ScreenSplitter();
 
-    bool nativeEvent(const QByteArray& eventType, void *msg, long *result);
+    QList<SplitWindow*> plist_splitWindow;
+    
+    void showSplitWindow();
+    void hideSplitWindow();
+
+
+
+    //bool nativeEvent(const QByteArray& eventType, void *msg, long *result);
+
+signals:
+    void signal_windowIsMoving();
+    void signal_windowIsMoved();
+
 private:
     Ui::ScreenSplitterClass ui;
-    WindowEventThread* windoweventthread;
+    WindowEventThread* windowevent;
 
     void hideEvent(QHideEvent* event);
     void closeEvent(QCloseEvent* event);
 
-    SystemTray* TrayIcon;   
+    SystemTray* TrayIcon;
 
 private slots:
     void IconActivated(QSystemTrayIcon::ActivationReason reason);
+
+    void updateScreen();
+    void resetScreen();
 };
 
 
