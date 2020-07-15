@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef _SYSTEM_TRAY_H_
+#define _SYSTEM_TRAY_H_
 
 #include <QSystemTrayIcon>
 
@@ -19,3 +21,5 @@ private:
 private slots:
 	
 };
+
+#endif
