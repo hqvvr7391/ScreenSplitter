@@ -48,17 +48,17 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\Inc;.\UI;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Inc;.\UI;.\;.\UI\SplitMenu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\Inc\UI;.\;.\UI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Inc\UI;.\;.\UI;.\UI\SplitMenu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;gui;widgets;xml;</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
@@ -96,22 +96,48 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="UI\SplitMenu\menusplitwindow.cpp" />
+    <ClCompile Include="UI\SplitMenu\monitorbutton.cpp" />
+    <ClCompile Include="UI\SplitMenu\splitbutton.cpp" />
+    <ClCompile Include="UI\splitpreset.cpp" />
     <ClCompile Include="UI\splitwindow.cpp" />
     <ClCompile Include="Src\window_event_thread.cpp" />
     <ClCompile Include="UI\systemtray.cpp" />
+    <ClCompile Include="UI\titlebar.cpp" />
     <QtRcc Include="ScreenSplitter.qrc" />
+    <QtUic Include="UI\SplitMenu\menusplitwindow.ui" />
     <QtUic Include="UI\splitwindow.ui" />
     <QtUic Include="ScreenSplitter.ui" />
     <QtMoc Include="ScreenSplitter.h" />
     <ClCompile Include="ScreenSplitter.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="UI\titlebar.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="UI\splitwindow.h" />
-    <QtMoc Include="Inc\window_event_thread.h" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="UI\systemtray.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="UI\SplitMenu\menusplitwindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Inc\window_event_thread.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="UI\titlebar.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="UI\splitpreset.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Inc\tree.hpp" />
+    <QtMoc Include="UI\SplitMenu\splitbutton.h" />
+    <QtMoc Include="UI\SplitMenu\monitorbutton.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="SplitPreset.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

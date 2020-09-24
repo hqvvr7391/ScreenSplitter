@@ -7,16 +7,21 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./Inc/window_event_thread.h \
-    ./ScreenSplitter.h \
+HEADERS += ./ScreenSplitter.h \
+    ./UI/titlebar.h \
     ./UI/splitwindow.h \
-    ./UI/asdfa.h
-SOURCES += ./Src/window_event_thread.cpp \
-    ./ScreenSplitter.cpp \
-    ./main.cpp \
+    ./Inc/window_event_thread.h \
+    ./UI/systemtray.h \
+    ./UI/menusplitwindow.h
+SOURCES += ./UI/menusplitwindow.cpp \
+    $$PWD/UI/titlebar.cpp \
     ./UI/splitwindow.cpp \
-    ./UI/asdfa.cpp
-FORMS += ./ScreenSplitter.ui \
-    ./UI/splitwindow.ui \
-    ./UI/asdfa.ui
-RESOURCES += ScreenSplitter.qrc
+    ./Src/window_event_thread.cpp \
+    ./UI/systemtray.cpp \
+    ./ScreenSplitter.cpp \
+    main.cpp
+FORMS += ScreenSplitter.ui \
+    $$PWD/UI/titlebar.ui \
+    ./UI/menusplitwindow.ui \
+    ./UI/splitwindow.ui
+RESOURCES += ./ScreenSplitter.qrc

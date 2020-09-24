@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<presettree>
+	<preset_type name = "전체화면">
+<!-- 예제 
+
+
+
+
+-->	
+		<preset name ="off">
+			<value>
+				<type>0</type>
+				<ratio>0</ratio>
+			</value>
+		</preset>
+		<preset name ="fullscreen">
+			<value>
+				<type>0</type>
+				<ratio>100</ratio>
+			</value>
+		</preset>
+	</preset_type>
+	
+	
+	<preset_type name = "2분할">
+		<preset name ="2-vertical">
+			<value>
+				<type>1</type>
+				<ratio>50</ratio>
+			</value>
+		</preset>
+
+		<preset name ="2-vertical">
+			<value>
+				<type>1</type>
+				<ratio>75</ratio>
+			</value>
+		</preset>
+
+		<preset>
+			<value>
+				<type>2</type>
+				<ratio>50</ratio>
+			</value>
+		</preset>
+	</preset_type>
+
+	
+	<preset_type name = "3분할">
+		<preset>
+			<value>
+				<type>1</type>
+				<ratio>66</ratio>
+			</value>
+			<subtree side="left">
+				<value>
+					<type>1</type>
+					<ratio>33</ratio>
+				</value>
+			</subtree>
+		</preset>
+
+		<preset>
+			<value>
+				<type>1</type>
+				<ratio>50</ratio>
+			</value>
+			<subtree side="left">
+				<value>
+					<type>2</type>
+					<ratio>50</ratio>
+				</value>
+			</subtree>
+		</preset>
+		
+		<preset>
+			<value>
+				<type>1</type>
+				<ratio>50</ratio>
+			</value>
+			<subtree side="right">
+				<value>
+					<type>2</type>
+					<ratio>50</ratio>
+				</value>
+			</subtree>
+		</preset>
+
+		<preset>
+			<value>
+				<type>2</type>
+				<ratio>50</ratio>
+			</value>
+			<subtree side="left">
+				<value>
+					<type>1</type>
+					<ratio>50</ratio>
+				</value>
+			</subtree>
+		</preset>
+
+		<preset>
+			<value>
+				<type>2</type>
+				<ratio>50</ratio>
+			</value>
+			<subtree side="right">
+				<value>
+					<type>1</type>
+					<ratio>50</ratio>
+				</value>
+			</subtree>
+		</preset>
+	</preset_type>
+
+	<preset_type name = "4분할">
+		<preset>
+			<value>
+				<type>1</type>
+				<ratio>50</ratio>
+			</value>
+			<subtree side="left">
+				<value>
+					<type>2</type>
+					<ratio>50</ratio>
+				</value>
+			</subtree>
+			<subtree side="right">
+				<value>
+					<type>2</type>
+					<ratio>50</ratio>
+				</value>
+			</subtree>
+		</preset>
+
+		<preset>
+			<value>
+				<type>1</type>
+				<ratio>50</ratio>
+			</value>
+			<subtree side="left">
+				<value>
+					<type>1</type>
+					<ratio>25</ratio>
+				</value>
+			</subtree>
+			<subtree side="right">
+				<value>
+					<type>1</type>
+					<ratio>75</ratio>
+				</value>
+			</subtree>
+		</preset>
+	</preset_type>
+
+	<preset_type name = "6분할">
+		<preset>
+			<value>
+				<type>2</type>
+				<ratio>50</ratio>
+			</value>
+			<subtree side="left">
+				<value>
+					<type>1</type>
+					<ratio>33</ratio>
+				</value>
+				<subtree side="right">
+					<value>
+						<type>1</type>
+						<ratio>66</ratio>
+					</value>
+				</subtree>
+			</subtree>
+			<subtree side="right">
+				<value>
+					<type>1</type>
+					<ratio>33</ratio>
+				</value>
+				<subtree side="right">
+					<value>
+						<type>1</type>
+						<ratio>66</ratio>
+					</value>
+				</subtree>
+			</subtree>
+		</preset>
+		
+		<preset>
+			<value>
+				<type>2</type>
+				<ratio>50</ratio>
+			</value>
+			<subtree side="left">
+				<value>
+					<type>1</type>
+					<ratio>50</ratio>
+				</value>
+				<subtree side="left">
+					<value>
+						<type>1</type>
+						<ratio>25</ratio>
+					</value>
+				</subtree>
+				<subtree side="right">
+					<value>
+						<type>1</type>
+						<ratio>75</ratio>
+					</value>
+				</subtree>
+			</subtree>
+			<subtree side="right">
+				<value>
+					<type>1</type>
+					<ratio>50</ratio>
+				</value>
+				<subtree side="left">
+					<value>
+						<type>1</type>
+						<ratio>25</ratio>
+					</value>
+				</subtree>
+				<subtree side="right">
+					<value>
+						<type>1</type>
+						<ratio>75</ratio>
+					</value>
+				</subtree>
+			</subtree>
+		</preset>
+		
+	</preset_type>
+</presettree>

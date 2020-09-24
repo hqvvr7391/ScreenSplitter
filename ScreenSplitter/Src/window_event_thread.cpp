@@ -5,12 +5,11 @@ WindowEventThread* WindowEventThread::instance = nullptr;
 WindowEventThread::WindowEventThread(QWidget* parent)
 {
 	
-	plist_monitor = QGuiApplication::screens();
-
 	desktop = QApplication::desktop();
 	timer = new QTimer(this);
 	connect(timer, &QTimer::timeout, this, &WindowEventThread::update);
 	timer->setInterval(30);
+
 }
 
 
@@ -35,18 +34,21 @@ void WindowEventThread::process()
 
 void WindowEventThread::update()
 {
-	emit event_WindowMoveChanging();
+	int id = getMouseScreen();
+	qDebug() << QCursor::pos();
+	emit event_WindowMoveChanging(id);
 }
 
 QPoint WindowEventThread::getMousePoint() 
 {
 	QPoint globalCursorPos = QCursor::pos();
-	int mousePos = desktop->screenNumber(globalCursorPos);
+	//int mousePos = desktop->screenNumber(globalCursorPos);
 	return globalCursorPos;
 }
 
 int WindowEventThread::getMouseScreen()
 {
+	//QApplication::desktop();
 	int mousePos = desktop->screenNumber(getMousePoint());
 	return mousePos;
 }
@@ -55,6 +57,7 @@ int WindowEventThread::getMouseScreen()
 void WindowEventThread::windowIsMoving()
 {
 	timer->start();
+	
 	emit event_WindowMoveStart();
 }
 
@@ -64,6 +67,18 @@ void WindowEventThread::windowIsMoved()
 	emit event_WindowMoveEnd();
 }
 
+void WindowEventThread::getRect(QRect rct)
+{
+	rect = rct;	
+}
+
+void WindowEventThread::setWindowPos(HWND hwnd)
+{
+	if (rect.isValid())
+	{
+		SetWindowPos(hwnd, HWND_TOP, rect.x(), rect.y(), rect.width(), rect.height(), SWP_SHOWWINDOW);
+	}
+}
 
 void CALLBACK WindowEventThread::WindowEventCallback(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
 	LONG idObject, LONG idChild,
@@ -78,15 +93,22 @@ void CALLBACK WindowEventThread::WindowEventCallback(HWINEVENTHOOK hook, DWORD e
 	}
 	else if (event == EVENT_SYSTEM_MOVESIZEEND) {
 		instance->windowIsMoved();
+		//cout << "window\t" << hwnd << endl;
+		//SetWindowPos(hwnd, HWND_TOP, x, y, cx, cy, SWP_SHOWWINDOW);
+		instance->setWindowPos(hwnd);
 	}
 }
 
 void WindowEventThread::setWinEventHook()
 {
+	//*
 	winmovehook = (HWINEVENTHOOK* )SetWinEventHook(
 		EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZEEND,  // Range of events .
 		NULL,                                          // Handle to DLL.
 		WindowEventCallback,                                // The callback.
 		0, 0,              // Process and thread IDs of interest (0 = all)
 		WINEVENT_OUTOFCONTEXT); // Flags.
+	//*/
+	//qDebug() << "SDFSD";
 }
+

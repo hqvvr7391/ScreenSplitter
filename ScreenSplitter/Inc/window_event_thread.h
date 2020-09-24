@@ -3,8 +3,6 @@
 #ifndef _WINDOW_EVENT_THREAD_H_
 #define _WINDOW_EVENT_THREAD_H_
 
-
-
 #include <Windows.h>
 #include <iostream>
 
@@ -19,9 +17,6 @@
 #include <QTimer>
 
 
-
-
-
 class WindowEventThread : public QObject
 {
     Q_OBJECT
@@ -30,8 +25,7 @@ public:
     explicit WindowEventThread(QWidget* parent = Q_NULLPTR);
     ~WindowEventThread();
 
-    QList<QScreen*> plist_monitor;
-
+   
     static WindowEventThread* getInstance();
 
     static void CALLBACK WindowEventCallback(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
@@ -40,6 +34,10 @@ public:
 
     QPoint getMousePoint();
     int getMouseScreen();
+    void setWindowPos(HWND hwnd);
+
+    QRect rect;
+
 /*
 
 protected:
@@ -48,7 +46,7 @@ protected:
 */
 signals:
     void event_WindowMoveStart();
-    void event_WindowMoveChanging();
+    void event_WindowMoveChanging(int id);
     void event_WindowMoveEnd();
 
 private:
@@ -70,9 +68,9 @@ private slots:
 
     void windowIsMoving();
     void windowIsMoved();
+
+    void getRect(QRect rct);
    
 };
 
-
-
-#endif // !WINDOW_EVENT_THREAD_H
+#endif

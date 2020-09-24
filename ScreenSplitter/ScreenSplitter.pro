@@ -13,3 +13,9 @@ OBJECTS_DIR += debug
 UI_DIR += .
 RCC_DIR += .
 include(ScreenSplitter.pri)
+
+INCLUDEPATH += ./Inc \
+./UI
+
+QT += widgets 
+
