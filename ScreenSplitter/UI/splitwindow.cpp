@@ -5,6 +5,8 @@ SplitWindow::SplitWindow(QWidget *parent, QScreen* screen)
 {
 	ui.setupUi(this);
 
+	this->setEnabled(false);
+
 	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 	setAttribute(Qt::WA_TranslucentBackground);
 	setWindowFlag(Qt::SubWindow);
@@ -13,64 +15,81 @@ SplitWindow::SplitWindow(QWidget *parent, QScreen* screen)
 	setGeometry(screen->geometry());
 
 	timer = new QTimer(this);
-	timer->setInterval(500);
+	timer->setInterval(750);
 	timer->setSingleShot(true);
-	this->setEnabled(false);
 
-	connect(this, SIGNAL(settedPreset()), timer, SLOT(start()));
-	connect(this, SIGNAL(settedPreset()), this, SLOT(show()));
-	connect(timer, SIGNAL(timeout()), this, SLOT(hide()));
+
+	
+	connect(this, SIGNAL(settedPreset()), 
+		timer, SLOT(start()));
+	connect(this, SIGNAL(settedPreset()),
+		this, SLOT(show()));
+	connect(timer, SIGNAL(timeout()), 
+		this, SLOT(hide()));
+
+	connect(this, SIGNAL(setVisibility(bool)),
+		this, SLOT(setVisible(bool)));
+
 	QWidget::paintEvent((QPaintEvent*) QEvent::None);
-
-	this->setEnabled(false);
 }
 
 SplitWindow::~SplitWindow()
 {
 }
 
-void SplitWindow::setPreset(SplitTree* tree)
+void SplitWindow::setPreset(SplitButton* pbtn)
 {
-	splittree = tree;
-	this->setEnabled((tree->getRoot() != nullptr) ? true : false);
-	this->repaint();
+	splittree = pbtn->getTree();
+	this->setEnabled((splittree != nullptr) ? true : false);
+	this->update();
 	emit settedPreset();
 }
 
-void SplitWindow::showEvent(QShowEvent* event) 
-{
-	
-	//qDebug() << "show" << isVisible();
+void SplitWindow::asdf() {
+	qDebug() << "asdfasdf";
 }
 
-void SplitWindow::hideEvent(QHideEvent* event) 
+
+void SplitWindow::setVisibleState(bool toggle)
 {
-	
-	//qDebug() << "hide" << isVisible();
+	if (toggle) {
+		if (!isVisible()) {
+			isMoving = true;
+			emit setVisibility(true);
+		}
+	}
+	else {
+		if (isVisible()) {
+			isMoving = false;
+			emit setVisibility(false);
+		}
+	}
 }
 
+QRect SplitWindow::getRect()
+{
+	return innerrect;
+}
 
 void SplitWindow::paintEvent(QPaintEvent* event)
 {
-	if (isEnabled()) {
 
-		QPainter painter(this);
-		QPen pen;
+	QPainter painter(this);
+	QPen pen;
 
-		pen.setColor("red");
-		pen.setWidth(8);
-		painter.setPen(pen);
-		//painter.drawRect(QRect(0, 0, p_monitor->geometry().width(), p_monitor->geometry().height()));
+	pen.setColor("red");
+	pen.setWidth(8);
+	painter.setPen(pen);
+	//painter.drawRect(QRect(0, 0, p_monitor->geometry().width(), p_monitor->geometry().height()));
 
-		this->paintRect(&painter, this->splittree->getRoot());
+	this->paintRect(&painter, this->splittree->getRoot());
 
-		pen.setColor("green");
-		painter.setPen(pen);
-		static int mg = 3;
-		static QMargins margin(mg, mg, mg, mg);
-		painter.drawRect(innerrect.marginsRemoved(margin));
-		
-	}
+	pen.setColor("green");
+	painter.setPen(pen);
+	static int mg = 3;
+	static QMargins margin(mg, mg, mg, mg);
+	if(isMoving)	painter.drawRect(innerrect.marginsRemoved(margin));
+
 }
 
 void SplitWindow::paintRect(QPainter* painter, SplitTreeNode* node)

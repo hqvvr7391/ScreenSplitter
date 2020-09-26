@@ -19,6 +19,7 @@
 
 #include "monitorbutton.h"
 #include "splitbutton.h"
+#include "screen.h"
 
 class menuSplitWindow : public QWidget
 {
@@ -49,6 +50,8 @@ public:
 	void createPresetButtons(QVector<SplitTree*> treelist);
 
 	virtual void paintEvent(QPaintEvent* event);
+	void updateMonitorFrame();
+
 
 signals:
 	void SendCapture(QPixmap capture);
@@ -60,8 +63,12 @@ private slots:
 	void updateSplitWindow(int id);
 	void hideSplitWindow();
 
-
+	void setPresetButton(int id);
 	void setMBtnPreset(int id);
-	void asdf();
+
+	void setMonitorButton(QPlatformScreen* screen);
+	void removeMonitorButton(QPlatformScreen* screen);
+
+
 
 };

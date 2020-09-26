@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="screen.cpp" />
     <ClCompile Include="UI\SplitMenu\menusplitwindow.cpp" />
     <ClCompile Include="UI\SplitMenu\monitorbutton.cpp" />
     <ClCompile Include="UI\SplitMenu\splitbutton.cpp" />
@@ -133,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\tree.hpp" />
+    <QtMoc Include="screen.h" />
     <QtMoc Include="UI\SplitMenu\splitbutton.h" />
     <QtMoc Include="UI\SplitMenu\monitorbutton.h" />
   </ItemGroup>

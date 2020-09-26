@@ -9,6 +9,7 @@
 
 #include "splitwindow.h"
 #include "splitbutton.h"
+#include "splitpreset.h"
 
 class MonitorButton : public QPushButton
 {
@@ -16,8 +17,10 @@ class MonitorButton : public QPushButton
 private:
 	void paintEvent(QPaintEvent* event);
 	SplitWindow* splitwindow;
+	SplitButton* pbtn = nullptr;
 	QScreen* monitor;
 	QPixmap map;
+	
 
 	bool capture = false;
 
@@ -26,6 +29,7 @@ public:
 	~MonitorButton();
 
 	void setMonitor(QScreen* screen);
+	QScreen* getMonitor();
 	void updateCapture();
 
 	void showSplitWindow();
@@ -33,11 +37,12 @@ public:
 	void hideSplitWindow();
 
 	void setPreset(QAbstractButton* btn);
+	SplitButton* getPresetBtn();
 
 	QRect getRect();
 
 signals:
-	void sendTree(QAbstractButton* pbtn);
+	void sendTree(SplitButton* pbtn);
 
 private slots:
 

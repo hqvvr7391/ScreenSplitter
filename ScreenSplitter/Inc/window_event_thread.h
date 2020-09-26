@@ -7,47 +7,21 @@
 #include <iostream>
 
 
-#include "splitwindow.h"
-
-#include <QDebug>
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QDebug>
 #include <QThread>
 #include <QTimer>
+
+
+#include "screen.h"
 
 
 class WindowEventThread : public QObject
 {
     Q_OBJECT
 
-public:
-    explicit WindowEventThread(QWidget* parent = Q_NULLPTR);
-    ~WindowEventThread();
-
-   
-    static WindowEventThread* getInstance();
-
-    static void CALLBACK WindowEventCallback(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
-        LONG idObject, LONG idChild,
-        DWORD dwEventThread, DWORD dwmsEventTime);
-
-    QPoint getMousePoint();
-    int getMouseScreen();
-    void setWindowPos(HWND hwnd);
-
-    QRect rect;
-
-/*
-
-protected:
-    void run() override;
-    void stop();
-*/
-signals:
-    void event_WindowMoveStart();
-    void event_WindowMoveChanging(int id);
-    void event_WindowMoveEnd();
 
 private:
     static WindowEventThread* instance;
@@ -59,15 +33,57 @@ private:
     MSG msg;
     HWINEVENTHOOK* winmovehook = nullptr;
 
+
+public:
+    explicit WindowEventThread(QWidget* parent = Q_NULLPTR);
+    ~WindowEventThread();
+
+    static WindowEventThread* getInstance();
+
+    static void CALLBACK WindowEventCallback(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
+        LONG idObject, LONG idChild,
+        DWORD dwEventThread, DWORD dwmsEventTime);
+
+    QPoint getMousePoint();
+    int getMouseScreen();
+    void setWindowPos(HWND hwnd, QRect rct);
+
+
+    void updateScreen();
+    QRect rect;
+
+    void updatewindowMoving();
+
+    void updateSplitWindow();
+    QRect getWindowSplitRect();
+    
+
+
+signals:
+    void event_WindowMoveStart();
+    void event_WindowMoveChanging(int id);
+    void event_WindowMoveEnd();
+
+    void addScreen(QPlatformScreen* screen);
+    void removeScreen(QPlatformScreen* screen);
+
+    void setSplitWindoVisible(bool toggle);
+
+
 private slots:
     void setWinEventHook();
-
     void process();
 
-    void update();
+    void screenAdded(QScreen* screen);
+    void screenRemoved(QScreen* screen);
 
-    void windowIsMoving();
-    void windowIsMoved();
+   
+
+    
+
+    void windowStartMove(HWND hwnd);
+    void windoIsMoving(HWND hwnd);
+    void windowEndMove(HWND hwnd);
 
     void getRect(QRect rct);
    

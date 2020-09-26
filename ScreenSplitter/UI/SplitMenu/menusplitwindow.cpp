@@ -4,31 +4,11 @@ menuSplitWindow::menuSplitWindow(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
+
+	grpmonitorbuttons = new QButtonGroup(this);
+	grppresetbuttons = new QButtonGroup(this);
 	
-	//this->setGeometry(QRect(QPoint(0,0),parent->size()));
-	this->adjustSize();
-	qDebug() << this->geometry();
-
-	plist_monitor = QGuiApplication::screens();
-
-	virtualsize = plist_monitor[0]->virtualGeometry();
-	qDebug() << virtualsize.size();
-	qDebug() << ui.monitorframe->size();
-	
-	float horz_ratio = (float)ui.monitorframe->width() / (float)virtualsize.width();
-	float vert_ratio = (float)ui.monitorframe->height() / (float)virtualsize.height();
-	
-	ratio = (horz_ratio < vert_ratio) ? horz_ratio : vert_ratio;
-
-	
-	QSize monitororiginsize = ui.monitorframe->size()/2 - virtualsize.size() * ratio / 2;
-	QPoint monitororigin = QPoint(monitororiginsize.width(), monitororiginsize.height());
-
-
-	grpmonitorbuttons = new QButtonGroup();
-	
-
-	for (int i = 0;i < plist_monitor.size();i++) {
+/*	for (int i = 0;i < plist_monitor.size();i++) {
 		QScreen* monitor = plist_monitor[i];
 		MonitorButton* btn = new MonitorButton(ui.monitorframe, monitor);
 		monitorbutton.append(btn);
@@ -44,39 +24,104 @@ menuSplitWindow::menuSplitWindow(QWidget *parent)
 
 	grppresetbuttons = new QButtonGroup(this);
 
+	connect(grppresetbuttons, SIGNAL(idClicked(int)), this, SLOT(setMBtnPreset(int)));*/
+
+	connect(grpmonitorbuttons, SIGNAL(idClicked(int)), this, SLOT(setPresetButton(int)));
 	connect(grppresetbuttons, SIGNAL(idClicked(int)), this, SLOT(setMBtnPreset(int)));
-	
-	
 
 	timer = new QTimer(this);
-	connect(timer, &QTimer::timeout, this, &menuSplitWindow::updateMonitorBtn);
+	connect(timer, &QTimer::timeout, 
+		this, &menuSplitWindow::updateMonitorBtn);
 	timer->setInterval(2000);
 	timer->start();
 }
 
 menuSplitWindow::~menuSplitWindow()
 {
-	while (monitorbutton.isEmpty()) delete monitorbutton.takeLast();
-	while (plist_monitor.isEmpty()) delete plist_monitor.takeLast();
+	//while (monitorbutton.isEmpty()) delete monitorbutton.takeLast();
+	//while (plist_monitor.isEmpty()) delete plist_monitor.takeLast();
+
+	QList<QAbstractButton*>pbtns = grppresetbuttons->buttons();
+	while (pbtns.isEmpty()) delete pbtns.takeLast();
 
 	delete grpmonitorbuttons;
+	delete grppresetbuttons;
 
 	delete timer;
 }
 
+
+void menuSplitWindow::setMonitorButton(QPlatformScreen* screen)
+{
+	MonitorButton* btn = screen->getMonitorButton();
+	btn->setParent(ui.monitorframe);
+	grpmonitorbuttons->addButton((QAbstractButton*)btn);
+
+	//grppresetbuttons->button(0)->setChecked(true);
+
+	if (btn->getPresetBtn() == nullptr)	btn->setPreset(grppresetbuttons->button(0));
+
+	if (grpmonitorbuttons->checkedId() == -1)	grpmonitorbuttons->button(-2)->setChecked(true);
+	
+	updateMonitorFrame();
+
+}
+
+void menuSplitWindow::updateMonitorFrame()
+{
+
+	virtualsize = qGuiApp->primaryScreen()->virtualGeometry();
+	qDebug() << virtualsize.size();
+	qDebug() << ui.monitorframe->size();
+
+	float horz_ratio = (float)ui.monitorframe->width() / (float)virtualsize.width();
+	float vert_ratio = (float)ui.monitorframe->height() / (float)virtualsize.height();
+
+	ratio = (horz_ratio < vert_ratio) ? horz_ratio : vert_ratio;
+
+
+	QSize monitororiginsize = ui.monitorframe->size() / 2 - virtualsize.size() * ratio / 2;
+	QPoint monitororigin = QPoint(monitororiginsize.width(), monitororiginsize.height());
+
+	QList<QObject*> children = ui.monitorframe->children();
+	for (int i = 0; i < children.size(); i++)
+	{
+		MonitorButton* btn = (MonitorButton*)children.at(i);
+		btn->setGeometry(
+			QRect(monitororigin + btn->getMonitor()->geometry().topLeft() * ratio, 
+				btn->getMonitor()->size() * ratio));
+	}
+	update();
+}
+
+void menuSplitWindow::removeMonitorButton(QPlatformScreen* screen)
+{
+	MonitorButton* btn = screen->getMonitorButton();
+	btn->setParent(nullptr);
+	grpmonitorbuttons->removeButton((QAbstractButton*)btn);
+
+}
+
 void menuSplitWindow::updateMonitorBtn()
 {
-	for (int i = 0; i < plist_monitor.size(); i++)
+	QList<QAbstractButton*> btns = grpmonitorbuttons->buttons();
+	
+	for (int i = 0; i < btns.size(); i++)
 	{
-		monitorbutton[i]->updateCapture();
+		((MonitorButton*)btns[i])->updateCapture();
 	}
 	
 }
 
 
-void menuSplitWindow::asdf()
+
+
+void menuSplitWindow::setPresetButton(int id)
 {
-	qDebug() << "SFDFSDFZXZC";
+	MonitorButton* mbtn = (MonitorButton*) grpmonitorbuttons->button(id);
+	int pid = grppresetbuttons->id(mbtn->getPresetBtn());
+	if (pid != -1)	
+		grppresetbuttons->button(pid)->setChecked(true);
 }
 
 void menuSplitWindow::setMBtnPreset(int id)
@@ -86,6 +131,7 @@ void menuSplitWindow::setMBtnPreset(int id)
 	mbtn->setPreset(pbtn);
 	qDebug() << "SdfSDFS";
 }
+
 
 void menuSplitWindow::showSplitWindow(int id)
 {

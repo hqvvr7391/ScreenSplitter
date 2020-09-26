@@ -7,7 +7,7 @@ MonitorButton::MonitorButton(QWidget*parent, QScreen* screen)
 	int margin = 5;
 	setContentsMargins(margin, margin, margin, margin);
 	this->monitor = screen;
-	splitwindow = new SplitWindow(nullptr, screen);
+	//splitwindow = new SplitWindow(nullptr, screen);
 }
 
 MonitorButton::~MonitorButton()
@@ -19,6 +19,9 @@ void MonitorButton::setMonitor(QScreen* screen)
 	monitor = screen;
 }
 
+QScreen* MonitorButton::getMonitor() {
+	return monitor;
+}
 void MonitorButton::updateCapture()
 {
 	capture = true;
@@ -43,18 +46,22 @@ void MonitorButton::hideSplitWindow()
 QRect MonitorButton::getRect() {
 	return splitwindow->innerrect.translated(splitwindow->pos());
 }
+
 void MonitorButton::setChecked(bool toggle)
 {
 	if (toggle) {
-		emit sendTree(this);
+		//emit sendTree(this);
 	}
 }
 
 void MonitorButton::setPreset(QAbstractButton* btn)
 {
-	SplitButton* button = (SplitButton*)btn;
-	splitwindow->setPreset(button->getTree());
+	pbtn = (SplitButton*)btn;
+	emit sendTree(pbtn);
 }
+
+SplitButton* MonitorButton::getPresetBtn()
+{	return pbtn;	}
 
 void MonitorButton::paintEvent(QPaintEvent* event)
 {

@@ -15,6 +15,7 @@
 #include "ui_splitwindow.h"
 #include "tree.hpp"
 #include "splitpreset.h"
+#include "splitbutton.h"
 
 class SplitWindow : public QWidget
 {
@@ -24,28 +25,38 @@ public:
 	SplitWindow(QWidget *parent = Q_NULLPTR, QScreen* screen = Q_NULLPTR);
 	~SplitWindow();
 
-	virtual void showEvent(QShowEvent* event);
-	virtual void hideEvent(QHideEvent* event);
-
 	virtual void paintEvent(QPaintEvent* event);
-	//virtual void mouseMoveEvent(QMouseEvent* event);
+
+
+
 	void paintRect(QPainter* painter, SplitTreeNode* node);
 
 	SplitTree* splittree;
 	QRect innerrect;
-	void setPreset(SplitTree* tree);
+	
+
+	void asdf();
+
+	void setVisibleState(bool toggle);
+	QRect getRect();
 
 signals:
 	void settedPreset();
+	void setVisibility(bool toggle);
 
 private:
 	Ui::splitwindow ui;
 	QScreen* p_monitor;
 	QTimer* timer;
 	
+	bool isMoving = false;
 
 	bool status = false;
+
+private slots:
+	void setPreset(SplitButton* pbtn);
 };
+
 
 
 #endif
